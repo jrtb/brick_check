@@ -1,0 +1,27 @@
+# General
+.DS_Store
+Thumbs.db
+*.log
+*.tmp
+*.swp
+node_modules/
+dist/
+build/
+
+# Local env/config
+.env
+.env.*
+*.local
+*.secret
+
+# AWS and credentials (never commit)
+.aws/
+credentials
+config
+
+# Editor/OS
+.idea/
+.vscode/
+*.code-workspace
+
+

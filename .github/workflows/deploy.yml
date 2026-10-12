@@ -1,0 +1,83 @@
+name: Deploy to S3 (Brick Check)
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+    inputs:
+      bucket:
+        description: 'S3 bucket name'
+        required: false
+      region:
+        description: 'AWS region (defaults to repo var AWS_REGION or us-east-1)'
+        required: false
+
+permissions:
+  id-token: write
+  contents: read
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    env:
+      S3_BUCKET: ${{ inputs.bucket || vars.S3_BUCKET }}
+      AWS_REGION: ${{ inputs.region || vars.AWS_REGION || 'us-east-1' }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Configure AWS credentials (OIDC)
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ vars.AWS_ROLE_TO_ASSUME }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Ensure bucket exists
+        shell: bash
+        run: |
+          if ! aws s3api head-bucket --bucket "$S3_BUCKET" >/dev/null 2>&1; then
+            if [ "$AWS_REGION" != "us-east-1" ]; then
+              aws s3api create-bucket --bucket "$S3_BUCKET" --region "$AWS_REGION" --create-bucket-configuration LocationConstraint="$AWS_REGION"
+            else
+              aws s3api create-bucket --bucket "$S3_BUCKET"
+            fi
+          fi
+
+      - name: Enable website hosting
+        run: |
+          aws s3 website "s3://$S3_BUCKET" --index-document index.html --error-document index.html || true
+
+      - name: Set public read policy (optional)
+        run: |
+          cat > /tmp/policy.json <<POLICY
+          {
+            "Version": "2012-10-17",
+            "Statement": [
+              {
+                "Sid": "PublicReadGetObject",
+                "Effect": "Allow",
+                "Principal": "*",
+                "Action": "s3:GetObject",
+                "Resource": "arn:aws:s3:::$S3_BUCKET/*"
+              }
+            ]
+          }
+          POLICY
+          aws s3api put-bucket-policy --bucket "$S3_BUCKET" --policy file:///tmp/policy.json || true
+
+      - name: Sync site
+        run: |
+          aws s3 sync . "s3://$S3_BUCKET" \
+            --exclude ".git/*" \
+            --exclude ".github/*" \
+            --exclude "deploy.sh" \
+            --delete \
+            --cache-control "public,max-age=600"
+          aws s3 cp index.html "s3://$S3_BUCKET/index.html" --cache-control "public,max-age=60" --content-type "text/html; charset=utf-8"
+          aws s3 cp styles.css "s3://$S3_BUCKET/styles.css" --cache-control "public,max-age=3600" --content-type "text/css; charset=utf-8"
+          aws s3 cp app.js "s3://$S3_BUCKET/app.js" --cache-control "public,max-age=600" --content-type "application/javascript; charset=utf-8"
+
+      - name: Website endpoint
+        run: echo "http://$S3_BUCKET.s3-website-$AWS_REGION.amazonaws.com"
+
+

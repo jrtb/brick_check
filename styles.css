@@ -1,0 +1,116 @@
+:root {
+  --bg: #0b0f14;
+  --card: #121923;
+  --muted: #7b8aa3;
+  --text: #e5eefb;
+  --accent: #7cc4ff;
+  --accent-2: #4ee3c2;
+  --danger: #ff6b6b;
+}
+
+* { box-sizing: border-box; }
+html, body { height: 100%; }
+body {
+  margin: 0;
+  font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji";
+  background: radial-gradient(1200px 800px at 20% -10%, #162236 0%, var(--bg) 45%),
+              radial-gradient(1200px 800px at 110% 20%, #0e1a28 0%, var(--bg) 55%),
+              var(--bg);
+  color: var(--text);
+}
+
+.container {
+  max-width: 940px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+.site-header {
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+  position: sticky;
+  top: 0;
+  backdrop-filter: saturate(120%) blur(8px);
+  background: rgba(11, 15, 20, 0.65);
+}
+.site-header .container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 18px 20px;
+}
+.site-header h1 { margin: 0; font-size: 22px; letter-spacing: 0.3px; }
+.tagline { margin: 4px 0 0 0; color: var(--muted); font-size: 13px; }
+
+main.container { padding: 28px 20px; }
+
+.card {
+  background: linear-gradient(180deg, rgba(255,255,255,0.04), rgba(255,255,255,0.02));
+  border: 1px solid rgba(255,255,255,0.07);
+  border-radius: 12px;
+  padding: 18px;
+  margin-bottom: 18px;
+  box-shadow: 0 12px 32px rgba(0,0,0,0.25);
+}
+.card h2 { margin: 4px 0 12px; font-size: 18px; }
+.card.info { color: var(--text); }
+.card .disclaimer { color: var(--muted); font-size: 13px; }
+
+.form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px; }
+.form-row { display: flex; flex-direction: column; gap: 6px; }
+label { font-size: 13px; color: var(--muted); }
+input[type="text"], input[type="number"], select {
+  background: #0d141d;
+  color: var(--text);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 8px;
+  padding: 10px 12px;
+}
+input::placeholder { color: #7f8da6; }
+
+.form-actions { grid-column: 1 / -1; display: flex; gap: 10px; margin-top: 6px; }
+button {
+  appearance: none;
+  border: 0;
+  padding: 10px 14px;
+  border-radius: 10px;
+  background: linear-gradient(180deg, var(--accent), #5aa8e6);
+  color: #04263a;
+  font-weight: 700;
+  letter-spacing: 0.3px;
+  cursor: pointer;
+}
+button:disabled { opacity: 0.6; cursor: not-allowed; }
+
+.advanced { grid-column: 1 / -1; }
+.advanced summary { cursor: pointer; color: var(--accent-2); }
+
+.hidden { display: none; }
+
+#summary { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 10px; margin-bottom: 12px; }
+.pill {
+  background: #0e1722;
+  border: 1px solid rgba(255,255,255,0.07);
+  padding: 10px 12px;
+  border-radius: 10px;
+}
+.pill .label { display: block; color: var(--muted); font-size: 12px; }
+.pill .value { font-size: 16px; font-weight: 700; }
+
+#calc { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace; background: #0d141d; border: 1px solid rgba(255,255,255,0.07); border-radius: 10px; padding: 12px; white-space: pre-wrap; }
+
+.debug summary { color: var(--accent-2); cursor: pointer; }
+.debug-actions { display: flex; gap: 8px; margin: 8px 0; }
+#debugLog { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace; background: #0d141d; border: 1px solid rgba(255,255,255,0.07); border-radius: 10px; padding: 12px; white-space: pre-wrap; max-height: 320px; overflow: auto; }
+
+.raw summary { color: var(--accent-2); cursor: pointer; }
+.listing {
+  border-bottom: 1px dashed rgba(255,255,255,0.08);
+  padding: 8px 0;
+}
+.listing .meta { color: var(--muted); font-size: 12px; }
+.listing .title { font-weight: 600; }
+.listing a { color: var(--accent); text-decoration: none; }
+
+.site-footer { border-top: 1px solid rgba(255,255,255,0.06); margin-top: 24px; }
+.site-footer .container { display: flex; justify-content: space-between; align-items: center; padding: 18px 20px; color: var(--muted); }
+

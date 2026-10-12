@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Brick Check — LEGO Resale Price Estimator</title>
+  <link rel="stylesheet" href="styles.css">
+  <meta name="description" content="Estimate a reasonable purchase price for LEGO sets based on eBay sold listings and fees.">
+</head>
+<body>
+  <header class="site-header">
+    <div class="container">
+      <h1>Brick Check</h1>
+      <p class="tagline">Estimate smart buy prices using eBay sold comps and fees</p>
+    </div>
+  </header>
+
+  <main class="container">
+    <section class="card">
+      <h2>Estimate by LEGO Set Number</h2>
+      <form id="estimate-form" class="form-grid">
+        <div class="form-row">
+          <label for="setNumber">LEGO set number</label>
+          <input id="setNumber" name="setNumber" type="text" inputmode="numeric" placeholder="e.g. 21318" required>
+        </div>
+
+        <div class="form-row">
+          <label for="condition">Condition</label>
+          <select id="condition" name="condition">
+            <option value="any" selected>Any</option>
+            <option value="new">New</option>
+            <option value="used">Used</option>
+          </select>
+        </div>
+
+        <div class="form-row">
+          <label for="searchDays">Lookback window (days)</label>
+          <input id="searchDays" name="searchDays" type="number" min="7" max="365" value="90">
+        </div>
+
+        <div class="form-row">
+          <label for="includeAuctions">
+            <input id="includeAuctions" name="includeAuctions" type="checkbox" checked>
+            Include auctions
+          </label>
+        </div>
+
+        <div class="form-row">
+          <label for="excludeParts">
+            <input id="excludeParts" name="excludeParts" type="checkbox" checked>
+            Exclude "parts only" listings
+          </label>
+        </div>
+
+        <details class="advanced">
+          <summary>Fees and assumptions</summary>
+          <div class="form-row">
+            <label for="feePercent">Fee percent (eBay + processing)</label>
+            <input id="feePercent" name="feePercent" type="number" min="0" max="50" step="0.01" value="13.25">
+          </div>
+          <div class="form-row">
+            <label for="perTxnFee">Per-transaction fee ($)</label>
+            <input id="perTxnFee" name="perTxnFee" type="number" min="0" step="0.01" value="0.30">
+          </div>
+          <div class="form-row">
+            <label for="shippingOut">Your outbound shipping cost ($)</label>
+            <input id="shippingOut" name="shippingOut" type="number" min="0" step="0.01" value="12.00">
+          </div>
+          <div class="form-row">
+            <label for="targetRoi">Target ROI (%)</label>
+            <input id="targetRoi" name="targetRoi" type="number" min="0" max="200" step="0.1" value="30">
+          </div>
+        </details>
+
+        
+
+        <div class="form-actions">
+          <button type="submit" id="runButton">Run estimation</button>
+        </div>
+      </form>
+    </section>
+
+    <section id="results" class="card hidden">
+      <h2>Results</h2>
+      <div id="summary"></div>
+
+      <div id="calc"></div>
+
+      <details id="debug-section" class="debug hidden">
+        <summary>Show debug log</summary>
+        <div class="debug-actions">
+          <button type="button" id="copyDebug">Copy log</button>
+        </div>
+        <pre id="debugLog"></pre>
+      </details>
+
+      <details id="raw-section" class="raw">
+        <summary>Show parsed listings</summary>
+        <div id="listings"></div>
+      </details>
+    </section>
+
+    <section class="card info">
+      <h2>About sources</h2>
+      <p>
+        This tool primarily pulls public eBay sold listings data by parsing search results. No credentials are stored or required.
+        You can optionally adjust assumptions and filters to better match your sourcing and shipping.
+      </p>
+      <p class="disclaimer">
+        Disclaimer: This is an estimator. Markets change, listings vary by condition and completeness. Always validate before purchasing.
+      </p>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <span>© <span id="year"></span> Brick Check</span>
+      <a href="https://github.com/" target="_blank" rel="noopener">View on GitHub</a>
+    </div>
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+</html>
+
